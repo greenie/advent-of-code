@@ -1,27 +1,25 @@
 import fs from 'fs'
 
-const courseMap = fs.readFileSync('./input').toString().split('\n').map(line => line.split(''))
-
-console.log(courseMap)
+const courseMap = fs.readFileSync('./input').toString().split('\n')
 
 const TREE = '#'
 const DX = 3
 const DY = 1
 
 const treesEncountered = (x, y, encountered) => {
-  const position = courseMap[y][x]
+  const line = courseMap[y]
 
-  if (!position) {
+  if (!line.length) {
     return encountered
   }
 
-  if (position && position === TREE) {
+  x = x % line.length
+
+  if (line.charAt(x) === TREE) {
     encountered += 1
   }
 
-  console.log(encountered)
-
-  treesEncountered(x + DX, y + DY, encountered)
+  return treesEncountered(x + DX, y + DY, encountered)
 }
 
 console.log(treesEncountered(0, 0, 0))
