@@ -29,6 +29,11 @@ const calculateSeatId = pass => {
   return row * 8 + column
 }
 
-const allSeatIds = boardingPasses.map(calculateSeatId)
+const allSeatIds = boardingPasses.map(calculateSeatId).sort((a, b) => b - a)
+const mySeatId = allSeatIds.find((a, i, arr) => a - arr[i + 1] === 2) - 1
 
-console.log(allSeatIds.sort((a, b) => b - a)[0])
+// part 1
+console.log(allSeatIds[0])
+
+// part 2
+console.log(mySeatId)
