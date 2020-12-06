@@ -27,5 +27,8 @@ const calculateProduct = (allNumbers, target, numbersToSum) => {
   return 0
 }
 
+// part 1
 console.log(calculateProduct(numbers, 2020, 2))
+
+// part 2
 console.log(calculateProduct(numbers, 2020, 3))

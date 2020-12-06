@@ -53,5 +53,8 @@ const validPasswordsCount = (validationRule, pairs) => pairs.reduce((validCount,
   return validCount
 }, 0)
 
+// part 1
 console.log(validPasswordsCount(inRange, passwordsWithRules))
+
+// part 2
 console.log(validPasswordsCount(inPosition, passwordsWithRules))
