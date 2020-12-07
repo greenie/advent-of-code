@@ -28,6 +28,18 @@ const bagsForColor = (bags, color) => {
   return [...new Set(canContain)]
 }
 
+const numBagsForColor = (bags, color) => {
+  let total = 1
+
+  bags[color].forEach(rule => {
+    if (rule) {
+      total += rule.quantity * numBagsForColor(bags, rule.color)
+    }
+  })
+
+  return total
+}
+
 const bags = {}
 
 rules.forEach(line => {
@@ -39,3 +51,6 @@ rules.forEach(line => {
 
 // part 1
 console.log(bagsForColor(bags, 'shiny gold').length)
+
+// part 2
+console.log(numBagsForColor(bags, 'shiny gold') - 1)
