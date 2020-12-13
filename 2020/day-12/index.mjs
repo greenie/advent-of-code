@@ -3,11 +3,13 @@ import { distance } from '../../util.mjs'
 
 const commands = fs.readFileSync('./input').toString().split('\n').filter(n => n)
 
-const COMPASS = {
-  N: 0,
-  E: 90,
-  S: 180,
-  W: 270
+const ROTATIONS = {
+  L90: [[0, -1], [1, 0]],
+  L180: [[-1, 0], [0, -1]],
+  L270: [[0, 1], [-1, 0]],
+  R90: [[0, 1], [-1, 0]],
+  R180: [[-1, 0], [0, -1]],
+  R270: [[0, -1], [1, 0]]
 }
 
 const parseCommand = command => {
@@ -17,53 +19,58 @@ const parseCommand = command => {
   return [action, value]
 }
 
-const rotate = (direction, deg) => {
-  const newDeg = (360 + COMPASS[direction] + deg) % 360
-  const newDirection = Object.entries(COMPASS).find(([_, v]) => v === newDeg)
+const rotate = (command, diff) => {
+  const r = ROTATIONS[command]
+  const { x, y } = diff
 
-  return newDirection[0]
+  return {
+    x: x * r[0][0] + y * r[0][1],
+    y: x * r[1][0] + y * r[1][1]
+  }
 }
 
-const move = (command, position, direction) => {
+const move = (command, position, diff, relative) => {
   const [action, value] = command
-  const [x, y] = position
-  let newPosition = [x, y]
-  let newDirection = direction
 
   switch (action) {
     case 'N':
-      newPosition = [x, y + value]
+      relative ? diff.y += value : position.y += value
       break
     case 'S':
-      newPosition = [x, y - value]
+      relative ? diff.y -= value : position.y -= value
       break
     case 'E':
-      newPosition = [x + value, y]
+      relative ? diff.x += value : position.x += value
       break
     case 'W':
-      newPosition = [x - value, y]
+      relative ? diff.x -= value : position.x -= value
       break
     case 'L':
-      newDirection = rotate(direction, -value)
-      break
     case 'R':
-      newDirection = rotate(direction, value)
-      break;
+      diff = rotate(`${action}${value}`, diff)
+      break
     case 'F':
-      return move([direction, value], position, direction)
+      position.x += diff.x * value
+      position.y += diff.y * value
   }
 
-  return [newPosition, newDirection]
+  return [position, diff]
 }
 
-const navigate = (commands, direction, x, y) => {
-  const moves = commands.map(parseCommand).reduce((acc, command) => {
-    return move(command, acc[0], acc[1])
-  }, [[x, y], direction])
+const navigate = (commands, initialDiff, relative) => {
+  const position = { x: 0, y: 0 }
+
+  const moves = commands.map(parseCommand).reduce(([pos, diff], command) => {
+    return move(command, pos, diff, relative)
+  }, [position, initialDiff])
 
   return moves[0]
 }
 
 // part 1
-const [x, y] = navigate(commands, 'E', 0, 0)
-console.log(distance(x, y))
+const ship = navigate(commands, { x: 1, y: 0 }, false)
+console.log(distance(ship.x, ship.y))
+
+// part 2
+const waypoint = navigate(commands, { x: 10, y: 1 }, true)
+console.log(distance(waypoint.x, waypoint.y))
