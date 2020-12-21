@@ -22,3 +22,6 @@ const getSpokenNumber = (input, turns) => {
 
 // part 1
 console.log(getSpokenNumber(numbers, 2020))
+
+// part 2
+console.log(getSpokenNumber(numbers, 30000000))
