@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { sortDesc } from '../../util.mjs'
+import { sortDesc } from '../util.mjs'
 
 const boardingPasses = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 

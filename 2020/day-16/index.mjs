@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { add, multiply, range } from '../../util.mjs'
+import { add, multiply, range } from '../util.mjs'
 
 const input = fs.readFileSync('./input', 'utf-8').trim().split('\n\n')
 

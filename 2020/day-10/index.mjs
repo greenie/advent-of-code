@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { add, multiply, sortAsc } from '../../util.mjs'
+import { add, multiply, sortAsc } from '../util.mjs'
 
 const adapters = fs.readFileSync('./input', 'utf-8')
   .trim()

@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { multiply } from '../../util.mjs'
+import { multiply } from '../util.mjs'
 
 const courseMap = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 

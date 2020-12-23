@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { distance } from '../../util.mjs'
+import { distance } from '../util.mjs'
 
 const commands = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 
