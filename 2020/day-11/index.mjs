@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { add } from '../../util.mjs'
 
-const seats = fs.readFileSync('./input').toString().split('\n').filter(n => n)
+const seats = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 
 const EMPTY = 'L'
 const OCCUPIED = '#'
@@ -117,8 +117,7 @@ const occupiedSeats = (adjacent, tolerance, seats) => {
 
     if (JSON.stringify(seatsAfterApply) === JSON.stringify(newSeats)) {
       occupiedSeats = seatsAfterApply
-        .map(row => row.split(''))
-        .flat()
+        .flatMap(row => row.split(''))
         .filter(seat => seat === OCCUPIED)
         .reduce(add)
         .length

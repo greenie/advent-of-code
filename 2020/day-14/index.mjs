@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { add } from '../../util.mjs'
 
-const input = fs.readFileSync('./input').toString().split('\n').filter(n => n)
+const input = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 
 const toBinaryString = (number, length = 36) => number.toString(2).padStart(length, '0')
 

@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const rules = fs.readFileSync('./input').toString().split('\.\n').filter(r => r)
+const rules = fs.readFileSync('./input', 'utf-8').trim().split('\.\n')
 
 const parseRule = rule => {
   if (rule.includes('no other bags')) {

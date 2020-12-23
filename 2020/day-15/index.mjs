@@ -1,10 +1,6 @@
 import fs from 'fs'
 
-const numbers = fs
-  .readFileSync('./input')
-  .toString()
-  .match(/^.*/g)
-  .flatMap(str => str.split(',').map(Number))
+const numbers = fs.readFileSync('./input', 'utf-8').trim().split(',').map(Number)
 
 const getSpokenNumber = (input, turns) => {
   const spoken = new Map(input.map((n, i) => [n, i + 1]))

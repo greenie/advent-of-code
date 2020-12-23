@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { distance } from '../../util.mjs'
 
-const commands = fs.readFileSync('./input').toString().split('\n').filter(n => n)
+const commands = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 
 const ROTATIONS = {
   L90: [[0, -1], [1, 0]],

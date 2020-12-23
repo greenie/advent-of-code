@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const instructions = fs.readFileSync('./input').toString().split('\n').filter(c => c)
+const instructions = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 
 const parseInstruction = instruction => {
   const [op, arg] = instruction.split(' ')

@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const groups = fs.readFileSync('./input').toString().split('\n\n').filter(g => g)
+const groups = fs.readFileSync('./input', 'utf-8').trim().split('\n\n')
 
 const getUniqueAnswers = groupAnswer => {
   const answers = groupAnswer.replace(/\n/gm, '').split('')

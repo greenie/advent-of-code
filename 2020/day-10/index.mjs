@@ -1,12 +1,11 @@
 import fs from 'fs'
-import {add, multiply} from '../../util.mjs'
+import { add, multiply, sortAsc } from '../../util.mjs'
 
-const adapters = fs.readFileSync('./input')
-  .toString()
+const adapters = fs.readFileSync('./input', 'utf-8')
+  .trim()
   .split('\n')
-  .filter(n => n)
   .map(Number)
-  .sort((a, b) => a - b)
+  .sort(sortAsc)
 
 const countDiffs = (list, ...targets) => list.reduce((acc, item, i, arr) => {
   if (!arr[i + 1]) {

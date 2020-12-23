@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const passwordsWithRules = fs.readFileSync('./input').toString().split('\n')
+const passwordsWithRules = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 
 const inRange = (lower, upper, character, password) => {
   const charCount = password.split('').reduce((count, char) => {
@@ -38,10 +38,6 @@ const inPosition = (pos, alt, character, password) => {
 }
 
 const validPasswordsCount = (validationRule, pairs) => pairs.reduce((validCount, pair) => {
-  if (!pair) {
-    return validCount
-  }
-
   const [rule, password] = pair.split(':')
   const [frequency, character] = rule.split(' ')
   const [firstRule, secondRule] = frequency.split('-').map(Number)

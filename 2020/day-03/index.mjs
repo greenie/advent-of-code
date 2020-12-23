@@ -1,6 +1,7 @@
 import fs from 'fs'
+import { multiply } from '../../util.mjs'
 
-const courseMap = fs.readFileSync('./input').toString().split('\n')
+const courseMap = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 
 const TREE = '#'
 
@@ -15,7 +16,7 @@ const movements = [
 const treesEncountered = (x, y, dx, dy, encountered) => {
   const line = courseMap[y]
 
-  if (!line || !line.length) {
+  if (!line) {
     return encountered
   }
 
@@ -30,7 +31,7 @@ const treesEncountered = (x, y, dx, dy, encountered) => {
 
 const treesProduct = movements.map(([dx, dy]) =>
   treesEncountered(0, 0, dx, dy, 0)
-).reduce((a, b) => a * b)
+).reduce(multiply)
 
 // part 1
 console.log(treesEncountered(0, 0, 3, 1, 0))

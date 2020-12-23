@@ -1,6 +1,7 @@
 import fs from 'fs'
+import { sortDesc } from '../../util.mjs'
 
-const boardingPasses = fs.readFileSync('./input').toString().split('\n')
+const boardingPasses = fs.readFileSync('./input', 'utf-8').trim().split('\n')
 
 const ROWS = 128
 const COLUMNS = 8
@@ -29,7 +30,7 @@ const calculateSeatId = pass => {
   return row * 8 + column
 }
 
-const allSeatIds = boardingPasses.map(calculateSeatId).sort((a, b) => b - a)
+const allSeatIds = boardingPasses.map(calculateSeatId).sort(sortDesc)
 const mySeatId = allSeatIds.find((a, i, arr) => a - arr[i + 1] === 2) - 1
 
 // part 1

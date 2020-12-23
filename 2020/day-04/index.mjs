@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const passports = fs.readFileSync('./input').toString().split('\n\n')
+const passports = fs.readFileSync('./input', 'utf-8').trim().split('\n\n')
 
 const REQUIRED_FIELDS_COUNT = 7
 const EYE_COLORS = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']

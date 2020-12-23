@@ -1,8 +1,7 @@
-import { match } from 'assert'
 import fs from 'fs'
-import {add} from '../../util.mjs'
+import { add } from '../../util.mjs'
 
-const input = fs.readFileSync('./input').toString().split('\n').filter(n => n).map(Number)
+const input = fs.readFileSync('./input', 'utf-8').trim().split('\n').map(Number)
 
 const findInvalid = (numbers, preamble) => {
   let invalidNumber

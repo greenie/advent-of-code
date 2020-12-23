@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const numbers = fs.readFileSync('./input').toString().split('\n').map(Number)
+const numbers = fs.readFileSync('./input', 'utf-8').trim().split('\n').map(Number)
 
 const calculateProduct = (allNumbers, target, numbersToSum) => {
   if (numbersToSum === 0) {
