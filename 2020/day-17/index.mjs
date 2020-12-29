@@ -1,116 +1,84 @@
 import fs from 'fs'
+import { product } from '../util.mjs'
 
 const input = fs.readFileSync('./input', 'utf-8')
   .trim()
   .split('\n')
-  .map(l => l.split(''))
+  .map(row => row.split(''))
 
 const ACTIVE = '#'
-const INACTIVE = '.'
 
-const countActive = list => list.reduce((acc, value) => {
-  if (value === ACTIVE) {
-    return acc += 1
-  }
-
-  return acc
-},0)
-
-const neighbours = (space, vector) => {
-  const { z, y, x } = vector
-
-  return [
-    // layer below
-    [
-      space[z - 1]?.[y - 1]?.[x - 1],
-      space[z - 1]?.[y - 1]?.[x],
-      space[z - 1]?.[y - 1]?.[x + 1],
-
-      space[z - 1]?.[y][x - 1],
-      space[z - 1]?.[y][x],
-      space[z - 1]?.[y][x + 1],
-
-      space[z - 1]?.[y + 1]?.[x - 1],
-      space[z - 1]?.[y + 1]?.[x],
-      space[z - 1]?.[y + 1]?.[x + 1]
-    ],
-
-    // current layer
-    [
-      space[z]?.[y - 1]?.[x - 1],
-      space[z]?.[y - 1]?.[x],
-      space[z]?.[y - 1]?.[x + 1],
-
-      space[z][y][x - 1],
-      space[z][y][x + 1],
-
-      space[z]?.[y + 1]?.[x - 1],
-      space[z]?.[y + 1]?.[x],
-      space[z]?.[y + 1]?.[x + 1]
-    ],
-
-    // layer above
-    [
-      space[z + 1]?.[y - 1]?.[x - 1],
-      space[z + 1]?.[y - 1]?.[x],
-      space[z + 1]?.[y - 1]?.[x + 1],
-
-      space[z + 1]?.[y][x - 1],
-      space[z + 1]?.[y][x],
-      space[z + 1]?.[y][x + 1],
-
-      space[z + 1]?.[y + 1]?.[x - 1],
-      space[z + 1]?.[y + 1]?.[x],
-      space[z + 1]?.[y + 1]?.[x + 1]
-    ]
-  ]
-}
-
-const grow = space => {
-  const grownSpace = [...space].map(layer => {
-    const grownLayer = layer.map(line => [INACTIVE, ...line, INACTIVE])
-    grownLayer.unshift([...INACTIVE.repeat(grownLayer[0].length)])
-    grownLayer.push([...INACTIVE.repeat(grownLayer[0].length)])
-
-    return grownLayer
+const neighbours = coords => {
+  const ranges = coords.split(',').map(c => {
+    c = Number(c)
+    return [c - 1, c, c + 1]
   })
 
-  const emptyLayer = grownSpace[0].map(l => [...INACTIVE.repeat(l.length)])
-
-  grownSpace.unshift(emptyLayer)
-  grownSpace.push(emptyLayer)
-
-  return grownSpace
+  return product(...ranges).map(c => c.join(','))
 }
 
-const cycle = (times, space) => {
-  if (times === 0) {
+const activeNeighboursCount = (space, coords) =>
+  neighbours(coords).reduce((acc, value) => {
+    if (value !== coords && space.has(value)) {
+      acc += 1
+    }
+
+    return acc
+  }, 0)
+
+const allNeighbours = space => {
+  const all = new Set()
+
+  for (const coords of space) {
+    for (const neighbour of neighbours(coords)) {
+      all.add(neighbour)
+    }
+  }
+
+  return all
+}
+
+const cycle = (iterations, space) => {
+  if (iterations === 0) {
     return space
   }
 
-  space = grow(space)
-  const newSpace = JSON.parse(JSON.stringify(space))
+  const newSpace = new Set()
+  const allSpaceNeighbours = allNeighbours(space)
 
-  for (let z = 0; z < space.length; z++) {
-    for (let y = 0; y < space[z].length; y++) {
-      for (let x = 0; x < space[z][y].length; x++) {
-        const activeNeighbours = countActive(neighbours(space, { z, x, y }).flat())
+  for (const p of allSpaceNeighbours) {
+    const count = activeNeighboursCount(space, p)
 
-        if (space[z][y][x] === ACTIVE) {
-          if (activeNeighbours < 2 || activeNeighbours > 3) {
-            newSpace[z][y][x] = INACTIVE
-          }
-        } else if (space[z][y][x] === INACTIVE) {
-          if (activeNeighbours === 3) {
-            newSpace[z][y][x] = ACTIVE
-          }
-        }
+    if (count === 3 || (count === 2 && space.has(p))) {
+      newSpace.add(p)
+    }
+  }
+
+  return cycle(iterations - 1, newSpace)
+}
+
+const createSpace = (dimensions, input) => {
+  const space = new Set()
+  const rest = new Array(dimensions - 2).fill(0).join(',')
+
+  for (let y = 0; y < input.length; y++) {
+    for (let x = 0; x < input[y].length; x++) {
+      if (input[y][x] === ACTIVE) {
+        space.add(`${rest},${y},${x}`)
       }
     }
   }
 
-  return cycle(times - 1, newSpace)
+  return space
+}
+
+const solve = (dimensions, iterations, input) => {
+  const space = createSpace(dimensions, input)
+  return cycle(iterations, space)
 }
 
 // part 1
-console.log(countActive(cycle(6, [input]).flat(2)))
+console.log(solve(3, 6, input).size)
+
+// part 2
+console.log(solve(4, 6, input).size)
