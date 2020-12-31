@@ -1,52 +1,70 @@
 import fs from 'fs'
 
-const [rules, messages] = fs.readFileSync('./input', 'utf-8').trim().split('\n\n')
+const input = fs.readFileSync('./input', 'utf-8').trim().split('\n\n')
 
 const parseRules = input => {
-  const rules = {}
+  const rules = new Map()
 
   input.split('\n').forEach(line => {
     let [id, rule] = line.split(': ')
+    id = Number(id)
 
     if (rule.startsWith('"')) {
       rule = rule[1]
     } else {
-      rule = rule.split(' | ').map(part => part.split(' '))
+      rule = rule.split(' | ').map(part => part.split(' ').map(Number))
     }
 
-    rules[id] = rule
+    rules.set(id, rule)
   })
 
   return rules
 }
 
-const createRulesRegex = (rules, id = '0') => {
-  if (typeof rules[id] === 'string') {
-    return rules[id]
+const match = (rules, message, id = 0, index = 0) => {
+  if (index === message.length) {
+    return []
   }
 
-  const options = []
+  const rule = rules.get(id)
 
-  rules[id].forEach(rule => {
-    let option = ''
+  if (typeof rule === 'string') {
+    return message[index] === rule ? [index + 1] : []
+  }
 
-    rule.forEach(subRule => {
-      option += createRulesRegex(rules, subRule)
+  let matches = []
+
+  rule.forEach(part => {
+    let subMatches = [index]
+
+    part.forEach(subRule => {
+      subMatches = subMatches.reduce((acc, value) => {
+        return acc.concat(match(rules, message, subRule, value))
+      }, [])
     })
 
-    options.push(option)
+    matches = matches.concat(subMatches)
   })
 
-  return ['(', options.join('|'), ')'].join('')
+  return matches
 }
 
-const regex = new RegExp(`^${createRulesRegex(parseRules(rules))}$`, 'g')
-
-// part 1
-console.log(messages.split('\n').reduce((acc, message) => {
-  if (message.match(regex)) {
+const countMatches = (rules, messages) => messages.reduce((acc, message) => {
+  if (match(rules, message).includes(message.length)) {
     acc += 1
   }
 
   return acc
-}, 0))
+}, 0)
+
+const rules = parseRules(input[0])
+const messages = input[1].split('\n')
+
+// part 1
+console.log(countMatches(rules, messages))
+
+// part 2
+rules.set(8, [[42], [42, 8]])
+rules.set(11, [[42, 31], [42, 11, 31]])
+
+console.log(countMatches(rules, messages))
