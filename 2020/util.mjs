@@ -13,3 +13,13 @@ export const product = (...lists) => lists.reduce((acc, list) => {
     })
   }).reduce((acc, value) => acc.concat(value), [])
 }, [[]])
+
+export const pairs = list => list.reduce((acc, itemA, i) => {
+  list.forEach((itemB, j) => {
+    if (j > i) {
+      acc.push([itemA, itemB])
+    }
+  })
+
+  return acc
+}, [])
